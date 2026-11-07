@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARKÉ — Objects of desire</title>
+<meta name="description" content="ARKÉ is a design studio for sculptural objects. Liquid metal, deep red, engineered in the dark.">
+<meta name="theme-color" content="#070605">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="is-loading">
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><i></i></div>
+
+<div class="loader" aria-hidden="true">
+  <span class="loader-label">ARKÉ — Studio for objects</span>
+  <span class="loader-n">000</span>
+</div>
+
+<header class="nav">
+  <a href="#top" class="logo" aria-label="ARKÉ home">ARKÉ</a>
+  <nav aria-label="Primary">
+    <a href="#collection" class="roll" data-t="Collection"><span>Collection</span></a>
+    <a href="#craft" class="roll" data-t="Craft"><span>Craft</span></a>
+    <a href="#contact" class="roll" data-t="Commission"><span>Commission</span></a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- 01 HERO -->
+  <section class="sec hero" data-morph="0" data-ox=".34" data-zoom="0" data-light="0">
+    <p class="eyebrow reveal">Studio for sculptural objects &nbsp;/&nbsp; Est. 2026</p>
+    <h1 class="display" data-split>Objects <em>of desire,</em><br>engineered in the&nbsp;dark.</h1>
+    <div class="hero-foot reveal">
+      <p class="lede">Liquid metal. Deep red. Forms that look like they are still moving after they have been cast.</p>
+      <a href="#collection" class="btn magnetic"><span>Explore the collection</span><b>→</b></a>
+    </div>
+    <span class="scroll-cue">Scroll <i></i></span>
+  </section>
+
+  <!-- 02 MARQUEE -->
+  <section class="sec marquee-sec" data-morph="1" data-ox="0" data-zoom=".5" data-light="0" aria-hidden="true">
+    <div class="marquee" data-dir="-1"><div class="marquee-in"><span>Liquid metal</span><span class="o">Liquid metal</span><span>Liquid metal</span><span class="o">Liquid metal</span></div></div>
+    <div class="marquee" data-dir="1"><div class="marquee-in"><span class="o">Cast in red</span><span>Cast in red</span><span class="o">Cast in red</span><span>Cast in red</span></div></div>
+  </section>
+
+  <!-- 03 MANIFESTO (light / dithered) -->
+  <section class="sec manifesto" data-morph="1.2" data-ox="-.6" data-zoom="-1.4" data-light="1">
+    <p class="eyebrow">( 01 ) Manifesto</p>
+    <p class="words" data-words>We do not design products. We cast moments of tension: a surface that catches a single red light, a curve that refuses to settle. Every piece begins as a feeling and is refined until it is quiet, heavy and impossible to ignore.</p>
+  </section>
+
+  <!-- 04 COLLECTION (horizontal) -->
+  <section class="sec collection" id="collection" data-morph="2" data-ox=".52" data-oy=".2" data-zoom="-1.6" data-light="0">
+    <div class="stick">
+      <div class="col-head">
+        <p class="eyebrow">( 02 ) The collection</p>
+        <h2 class="display sm" data-split>Three objects.<br><em>No compromise.</em></h2>
+      </div>
+      <div class="track">
+        <article class="card tilt">
+          <div class="art art-ember"><i></i></div>
+          <div class="meta"><span>No. 01</span><h3>Ember</h3><p>Hand-poured resin core, mirror chrome shell. 38 cm.</p></div>
+        </article>
+        <article class="card tilt">
+          <div class="art art-mono"><i></i></div>
+          <div class="meta"><span>No. 02</span><h3>Monolith</h3><p>Single block of anodised aluminium, twisted a quarter turn. 52 cm.</p></div>
+        </article>
+        <article class="card tilt">
+          <div class="art art-halo"><i></i></div>
+          <div class="meta"><span>No. 03</span><h3>Halo</h3><p>A ring of polished steel that holds a single point of red light. 44 cm.</p></div>
+        </article>
+        <article class="card end">
+          <div class="meta"><span>Edition of 25 each</span><h3>Numbered.<br>Signed.<br><em>Gone.</em></h3><a href="#contact" class="btn magnetic"><span>Request access</span><b>→</b></a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 CRAFT -->
+  <section class="sec craft" id="craft" data-morph="3" data-ox=".56" data-zoom="-.7" data-light="0">
+    <p class="eyebrow">( 03 ) Craft</p>
+    <h2 class="display sm" data-split>Made slowly.<br><em>Finished in the light.</em></h2>
+    <div class="stats">
+      <div><b data-count="480">0</b><span>hours of hand finishing per piece</span></div>
+      <div><b data-count="25">0</b><span>pieces in every edition</span></div>
+      <div><b data-count="12">0</b><span>coats of mirror lacquer</span></div>
+    </div>
+  </section>
+
+  <!-- 06 CTA -->
+  <section class="sec cta" id="contact" data-morph="0" data-ox="0" data-zoom="1.1" data-light="0">
+    <p class="eyebrow">( 04 ) Commission</p>
+    <h2 class="display xl wave" data-split>Own the<br><em>unrepeatable.</em></h2>
+    <a href="mailto:studio@example.com" class="btn big magnetic"><span>Begin a commission</span><b>→</b></a>
+    <p class="fine">studio@example.com &nbsp;·&nbsp; Replace with your real address</p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-word" aria-hidden="true">ARKÉ</div>
+  <div class="foot-row">
+    <span>© 2026 ARKÉ Studio</span>
+    <span>Objects of desire</span>
+    <a href="#top" class="roll" data-t="Back to top"><span>Back to top</span></a>
+  </div>
+</footer>
+
+<script src="assets/scene.js"></script>
+<script src="assets/main.js"></script>
+</body>
+</html>
