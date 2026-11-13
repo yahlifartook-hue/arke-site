@@ -1,22 +1,41 @@
-# ARKÉ — cinematic luxury site
+# SELENE — Lunar Lamp storefront
 
-Zero-dependency static site. Raw WebGL raymarched 3D form that morphs between shapes as you scroll,
-1-bit ordered-dither "halftone" light section, kinetic masked type, scroll-velocity marquees,
-horizontal pinned collection, magnetic buttons, custom cursor, film grain.
+A cinematic, fully working one-product store. **Product:** a 16-colour 3D-printed moon lamp with an optional magnetic levitating base, a category that sells in high volume on AliExpress and other marketplaces (dropshipping-friendly).
 
-- `index.html` — content
-- `assets/scene.js` — WebGL shader scene
-- `assets/main.js` — scroll camera, kinetic type, interactions
-- `assets/style.css` — styling
+Source: <https://github.com/yahlifartook-hue/arke-site>
+
+## What's inside
+- **Raw WebGL (no libraries):** raymarched cratered moon lit from within, levitation ring, star field, nebula and dust motes. The colour swatches, size and base options change the 3D object live; scroll flies the camera into the craters, orbits and zooms; drag the moon to spin it.
+- **Motion:** kinetic masked type (rise / flip / blur variants), text scramble, scroll-lit words, pinned sliding statement, horizontal pinned feature scroll, scroll-velocity marquees + skew, magnetic buttons, custom cursor, film grain, page-wipe transitions, add-to-cart orb flight + sparks.
+- **Working shop:** product options, cart drawer (persisted), free-shipping progress bar, checkout form, success page.
+- **Pages:** `privacy.html`, `cookies.html` (+ working consent banner / preferences), `returns.html` (policy + working return request form), `reviews.html` (rating summary, filter, sort, write a review), `terms.html`, `shipping.html`, `404.html`.
 
 ## Run locally
-    python3 -m http.server 8000
+    npm run dev        # python3 -m http.server 8000  → http://localhost:8000
+    npm test           # offline test of the checkout function
 
-## Deploy
-Static site, no build step. Import the repo in Vercel (Framework: Other, no build command, output dir `.`)
-or run `npx vercel --prod`.
+## Take payments (Vercel + Stripe)
+1. Import this repo in Vercel (no build command, output dir `.`).
+2. Add env var `STRIPE_SECRET_KEY` (start with a `sk_test_…` key).
+3. Redeploy. `/api/checkout` creates a Stripe Checkout Session; **prices come from `assets/catalog.js` on the server**, so the browser can't change them.
+4. Optional: add a Stripe webhook for fulfilment emails.
 
-## Customise
-- Brand/copy: `index.html`. Replace `studio@example.com`.
-- Colours: CSS variables at top of `style.css`.
-- Per-section 3D state: `data-morph` (0-3 shape), `data-ox/oy` (position), `data-zoom`, `data-light` on each `.sec`.
+Without a key (or on GitHub Pages) checkout falls back to **order-request mode**: the order is saved, optionally POSTed to `orderEndpoint` (Formspree etc.) or opened as a pre-filled email, and **no money is taken**.
+
+## Make it yours: `assets/config.js`
+Business name, address, support email, free-shipping threshold, return window, endpoints, analytics script (loaded only after consent), and the `demoMode` / `showSampleReviews` switches. Set both to `false` when you launch. Prices and options live in `assets/catalog.js`.
+
+## Before you launch
+- Replace the placeholder name/address/email in `config.js`; the legal pages read from it.
+- The privacy/terms/cookie/returns/shipping texts are **templates, not legal advice**. Have them checked for your country.
+- Match specs, sizes, battery and delivery claims to your actual supplier listing; test-order a sample first.
+- Sample reviews are labelled "Sample". Never publish invented reviews as real ones.
+- Reviews are stored in the visitor's browser until you point `reviewsEndpoint` at a service. For real social proof, collect reviews from real buyers.
+- Check the SELENE name/domain for trademark conflicts in your market.
+
+## Structure
+    index.html            home + product
+    checkout.html …       inner pages (static HTML, chrome injected by assets/shop.js)
+    api/checkout.js       Stripe Checkout Session (Vercel function)
+    assets/scene.js       WebGL shader        assets/main.js   scroll camera + motion
+    assets/shop.js        cart, drawer, consent, transitions   assets/pages.js   page logic

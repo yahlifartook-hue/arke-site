@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reviews — SELENE</title>
+<meta name="description" content="Customer reviews of the SELENE Lunar Lamp. Read them and add your own.">
+<meta name="theme-color" content="#050507">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=DM+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="is-loading" data-page="reviews">
+<main id="main"><section class="sec p-hero" data-ox=".5" data-zoom="-.2" data-orbit=".2" data-ring="0">
+  <p class="eyebrow">( 07 ) &nbsp;Reviews</p>
+  <h1 class="display" data-split>Real words. <em>Real rooms.</em></h1>
+  <p class="lede reveal">Read what people say, filter by stars, or add your own.</p>
+</section>
+<section class="doc sec" data-ox=".52" data-zoom="-1.5" data-orbit=".2" data-ring="0" style="min-height:0;padding-top:30px;grid-template-columns:1fr">
+  <div class="panel" style="max-width:1040px;margin:0 auto;width:100%">
+    <p class="note" id="rv-demo" hidden>Demo mode: reviews are saved in this browser only. Set <code>reviewsEndpoint</code> in <code>assets/config.js</code> to receive them, and set <code>showSampleReviews</code> to <code>false</code> at launch to remove the labelled samples.</p>
+    <div class="rv-top" id="rv-summary"></div>
+    <div class="rv-tools"><div class="chips" id="rv-filter"><button data-f="0" class="on">All</button><button data-f="5">5★</button><button data-f="4">4★</button><button data-f="3">3★</button><button data-f="2">2★</button><button data-f="1">1★</button></div>
+      <label><span class="sr" hidden>Sort</span><select id="rv-sort" aria-label="Sort reviews"><option value="new">Newest</option><option value="hi">Highest rated</option><option value="lo">Lowest rated</option></select></label></div>
+    <div id="rv-list"></div>
+    <div class="prose"><h2 id="write">Write a review</h2></div>
+    <form id="rv-form" class="form">
+      <div class="field full"><span>Your rating</span><div class="star-in" id="star-in" role="radiogroup" aria-label="Rating"></div></div>
+      <label class="field"><span>Name</span><input name="name" maxlength="40" placeholder="First name or nickname" autocomplete="given-name"></label>
+      <label class="field"><span>Headline</span><input name="title" maxlength="80" required placeholder="Sum it up"></label>
+      <label class="field full"><span>Your review</span><textarea name="text" maxlength="1200" required placeholder="How does it look at night? What colour do you leave it on?"></textarea></label>
+      <div class="sub full"><button class="btn solid magnetic" type="submit"><span>Post review</span><b>→</b></button><span class="fine">Be honest. We publish good and bad reviews.</span></div>
+    </form>
+  </div>
+</section>
+<script>document.getElementById('rv-demo').hidden=!(window.SELENE_CONFIG&&SELENE_CONFIG.demoMode)</script>
+</main>
+<script src="assets/config.js"></script>
+<script src="assets/catalog.js"></script>
+<script src="assets/shop.js"></script>
+<script src="assets/pages.js"></script>
+<script src="assets/scene.js"></script>
+<script src="assets/main.js"></script>
+</body>
+</html>
