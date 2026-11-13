@@ -1,10 +1,10 @@
-/* SELENE — page-specific behaviour: product panel, reviews, checkout, returns, success, FAQ. */
+/* GALE — page-specific behaviour: product panel, reviews, checkout, returns, success, FAQ. */
 (function () {
   'use strict';
-  const S = window.Selene, CFG = S.CFG, CAT = S.CAT, $ = S.$, $$ = S.$$, money = S.money, esc = S.esc, store = S.store;
+  const S = window.Gale, CFG = S.CFG, CAT = S.CAT, $ = S.$, $$ = S.$$, money = S.money, esc = S.esc, store = S.store;
   const page = document.body.dataset.page;
 
-  S.opt = { size: '15', base: 'stand', qty: 1 };
+  S.opt = { size: '4', qty: 1 };
   const uid = p => p + '-' + Date.now().toString(36).slice(-4).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase();
   const stars = v => `<span class="stars" style="--v:${v}" role="img" aria-label="${(+v).toFixed(1)} out of 5 stars">★★★★★</span>`;
   const mailto = (subject, body) => `mailto:${CFG.supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -17,14 +17,14 @@
   /* ---------------- reviews store ---------------- */
   const SAMPLES = [
     { id: 's1', name: 'Sample · Alex M.', rating: 5, title: 'Sample review', text: 'Placeholder text showing how a five-star review looks. Replace with real customer feedback at launch.', ts: Date.parse('2026-10-02'), sample: true },
-    { id: 's2', name: 'Sample · Priya K.', rating: 5, title: 'Sample review', text: 'Placeholder text: describe the colour cycling, the crater detail, how it looks in a dark room.', ts: Date.parse('2026-10-09'), sample: true },
+    { id: 's2', name: 'Sample · Priya K.', rating: 5, title: 'Sample review', text: 'Placeholder text: describe how it feels on a hot day, the airflow and the battery life.', ts: Date.parse('2026-10-09'), sample: true },
     { id: 's3', name: 'Sample · Jonas B.', rating: 4, title: 'Sample review', text: 'Placeholder text for a four-star review, where a customer mentions one small thing they would improve.', ts: Date.parse('2026-10-15'), sample: true }
   ];
   const Reviews = {
-    real() { return store.get('selene_reviews_v1', []) || []; },
+    real() { return store.get('gale_reviews_v1', []) || []; },
     all() { return this.real().concat(CFG.showSampleReviews ? SAMPLES : []).sort((a, b) => b.ts - a.ts); },
     add(r) {
-      const list = this.real(); list.push(r); store.set('selene_reviews_v1', list);
+      const list = this.real(); list.push(r); store.set('gale_reviews_v1', list);
       if (CFG.reviewsEndpoint) post(CFG.reviewsEndpoint, r).catch(() => {});
     },
     stats(list) {
@@ -53,35 +53,32 @@
 
   /* ---------------- product panel ---------------- */
   if ($('#buy')) {
-    const sw = $('#swatches'), sizes = $('#sizes'), bases = $('#bases');
-    const cname = $('#cname'), heroName = $('#hero-cname'), price = $('#price');
+    const sw = $('#swatches'), sizes = $('#sizes');
+    const cname = $('#cname'), price = $('#price');
     sw.innerHTML = CAT.colors.map((c, i) => `<button role="radio" aria-checked="${i === 0}" aria-label="${c.name}" title="${c.name}" style="--c:${c.hex}"></button>`).join('');
-    sizes.innerHTML = CAT.sizes.map(s => `<button role="radio" data-id="${s.id}" aria-checked="${s.id === S.opt.size}"><b>${s.label}</b><span>${money(s.price)}</span></button>`).join('');
-    bases.innerHTML = CAT.bases.map(b => `<button role="radio" data-id="${b.id}" aria-checked="${b.id === S.opt.base}"><b>${b.label}</b><span>${b.add ? '+' + money(b.add) : 'Included'}</span></button>`).join('');
+    sizes.innerHTML = CAT.sizes.map(s => `<button role="radio" data-id="${s.id}" aria-checked="${s.id === S.opt.size}"><b>${s.label}</b><span>${money(s.price)} · ${s.note}</span></button>`).join('');
 
-    const sku = () => CAT.skus[`selene-${S.opt.size}-${S.opt.base}`];
+    const sku = () => CAT.skus[`gale-${S.opt.size}-${CAT.colors[S.color].id}`];
     function sync() {
       const s = sku();
       price.textContent = money(s.price);
       $('#add span').textContent = `Add to cart — ${money(s.price * S.opt.qty)}`;
       $('#q').textContent = S.opt.qty;
-      $$('[data-from]').forEach(e => (e.textContent = money(CAT.skus['selene-15-stand'].price)));
-      S.events.dispatchEvent(new CustomEvent('opt'));
+      $$('[data-from]').forEach(e => (e.textContent = money(CAT.sizes[0].price)));
     }
     function colorSync() {
-      const c = CAT.colors[S.color];
-      cname.textContent = c.name; if (heroName) heroName.textContent = c.name;
+      cname.textContent = CAT.colors[S.color].name;
       $$('button', sw).forEach((b, i) => b.setAttribute('aria-checked', i === S.color));
+      sync();
     }
     sw.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.setColor($$('button', sw).indexOf(b), true); });
     S.events.addEventListener('color', colorSync); colorSync();
-    const seg = (el, key) => el.addEventListener('click', e => {
+    sizes.addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;
-      S.opt[key] = b.dataset.id; $$('button', el).forEach(x => x.setAttribute('aria-checked', x === b)); sync();
+      S.opt.size = b.dataset.id; $$('button', sizes).forEach(x => x.setAttribute('aria-checked', x === b)); sync();
     });
-    seg(sizes, 'size'); seg(bases, 'base');
     $('#q-').onclick = () => { S.opt.qty = Math.max(1, S.opt.qty - 1); sync(); };
-    $('#q\\+').onclick = () => { S.opt.qty = Math.min(10, S.opt.qty + 1); sync(); };
+    document.getElementById('q+').onclick = () => { S.opt.qty = Math.min(10, S.opt.qty + 1); sync(); };
     sync();
 
     const add = $('#add');
@@ -94,8 +91,6 @@
     $('#buynow').addEventListener('click', () => { S.cart.add(sku().id, S.opt.qty); document.body.classList.add('leaving'); setTimeout(() => (location.href = 'checkout.html'), 520); });
   }
 
-  /* hero swatch auto-cycle label */
-  S.events.addEventListener('color', e => { const h = $('#hero-cname'); if (h) h.textContent = e.detail.name; });
 
   /* ---------------- FAQ accordion ---------------- */
   $$('.acc .q button').forEach(b => b.addEventListener('click', () => {
@@ -159,16 +154,16 @@
       if (!S.cart.items.length) return;
       const fd = Object.fromEntries(new FormData(form).entries());
       const customer = { email: fd.email, name: fd.name, phone: fd.phone || '', address: { line1: fd.line1, line2: fd.line2 || '', city: fd.city, state: fd.state || '', postal: fd.postal, country: fd.country } };
-      const order = { id: uid('SEL'), ts: Date.now(), items: S.cart.items.map(i => ({ sku: i.sku, qty: i.qty })), subtotal: S.cart.subtotal(), shipping: S.cart.shipping(), total: S.cart.total(), customer, notes: fd.notes || '' };
+      const order = { id: uid('GAL'), ts: Date.now(), items: S.cart.items.map(i => ({ sku: i.sku, qty: i.qty })), subtotal: S.cart.subtotal(), shipping: S.cart.shipping(), total: S.cart.total(), customer, notes: fd.notes || '' };
       btn.disabled = true; btn.classList.add('busy');
-      const orders = store.get('selene_orders_v1', []) || [];
+      const orders = store.get('gale_orders_v1', []) || [];
       let res = null, data = {};
       try {
         res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: order.items, customer, orderId: order.id, notes: order.notes }) });
         data = await res.json().catch(() => ({}));
       } catch (x) { res = null; }
       if (res && res.ok && data.url) {
-        orders.push(Object.assign(order, { status: 'awaiting-payment' })); store.set('selene_orders_v1', orders);
+        orders.push(Object.assign(order, { status: 'awaiting-payment' })); store.set('gale_orders_v1', orders);
         document.body.classList.add('leaving'); setTimeout(() => (location.href = data.url), 450); return;
       }
       if (res && res.status !== 404 && res.status !== 405 && res.status !== 501 && data.error !== 'not_configured') {
@@ -177,7 +172,7 @@
       }
       // fallback: order request (no payment backend yet)
       order.status = 'request';
-      orders.push(order); store.set('selene_orders_v1', orders);
+      orders.push(order); store.set('gale_orders_v1', orders);
       const lines = order.items.map(i => `${i.qty} × ${CAT.skus[i.sku].name} (${money(CAT.skus[i.sku].price)})`).join('\n');
       const body = `Order ${order.id}\n\n${lines}\n\nSubtotal: ${money(order.subtotal)}\nShipping: ${money(order.shipping)}\nTotal: ${money(order.total)}\n\nShip to:\n${customer.name}\n${customer.address.line1} ${customer.address.line2}\n${customer.address.city} ${customer.address.state} ${customer.address.postal}\n${customer.address.country}\n${customer.email} ${customer.phone}\n\nNotes: ${order.notes}`;
       let sent = false;
@@ -192,7 +187,7 @@
   /* ---------------- success ---------------- */
   if (page === 'success') {
     const q = new URLSearchParams(location.search), id = q.get('order') || '';
-    const orders = store.get('selene_orders_v1', []) || [], o = orders.find(x => x.id === id);
+    const orders = store.get('gale_orders_v1', []) || [], o = orders.find(x => x.id === id);
     const mode = q.get('mode');
     if (mode === 'request') {
       $('#ok-title').innerHTML = 'Order request <em>received.</em>';
@@ -201,8 +196,8 @@
         : `Your email app should have opened with the order details. <b>Press send</b> to finish. If it didn't open, email <a href="mailto:${esc(CFG.supportEmail)}">${esc(CFG.supportEmail)}</a> quoting your order number. We'll reply with a secure payment link. <b>No payment has been taken.</b>`;
     } else {
       S.cart.clear();
-      if (o) { o.status = 'paid'; store.set('selene_orders_v1', orders); }
-      $('#ok-text').innerHTML = `Payment received. A receipt is on its way to your inbox, and you'll get tracking as soon as your lamp ships.`;
+      if (o) { o.status = 'paid'; store.set('gale_orders_v1', orders); }
+      $('#ok-text').innerHTML = `Payment received. A receipt is on its way to your inbox, and you'll get tracking as soon as your fan ships.`;
     }
     $('#ok-id').textContent = id || '—';
     if (o) $('#ok-items').innerHTML = o.items.map(i => `<li>${i.qty} × ${esc(CAT.skus[i.sku] ? CAT.skus[i.sku].short : i.sku)}</li>`).join('');
@@ -212,7 +207,7 @@
   /* ---------------- returns ---------------- */
   if (page === 'returns') {
     const form = $('#rt-form'), out = $('#rt-out');
-    const orders = store.get('selene_orders_v1', []) || [];
+    const orders = store.get('gale_orders_v1', []) || [];
     $('#rt-orders').innerHTML = orders.map(o => `<option value="${esc(o.id)}">`).join('');
     $('#rt-item').innerHTML = Object.values(CAT.skus).map(s => `<option value="${s.id}">${esc(s.short)}</option>`).join('');
     $('#rt-demo').hidden = !CFG.demoMode;
@@ -220,7 +215,7 @@
       e.preventDefault();
       const fd = Object.fromEntries(new FormData(form).entries());
       const rma = { id: uid('RMA'), ts: Date.now(), order: fd.order.trim(), email: fd.email.trim(), item: fd.item, reason: fd.reason, resolution: fd.resolution, details: fd.details.trim() };
-      const list = store.get('selene_returns_v1', []) || []; list.push(rma); store.set('selene_returns_v1', list);
+      const list = store.get('gale_returns_v1', []) || []; list.push(rma); store.set('gale_returns_v1', list);
       let sent = false;
       if (CFG.returnsEndpoint) { try { await post(CFG.returnsEndpoint, Object.assign({ _subject: 'Return request ' + rma.id }, rma)); sent = true; } catch (x) {} }
       const body = `Return request ${rma.id}\nOrder: ${rma.order}\nEmail: ${rma.email}\nItem: ${CAT.skus[rma.item].name}\nReason: ${rma.reason}\nWants: ${rma.resolution}\n\n${rma.details}`;

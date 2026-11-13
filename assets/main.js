@@ -1,7 +1,7 @@
-/* SELENE — motion layer: loader, kinetic type, scroll-driven fluid camera, pinned scenes, cursor, drag-to-spin. */
+/* GALE — motion layer: loader, kinetic type, scroll-driven fluid camera, pinned scenes, cursor, drag-to-spin. */
 (function () {
   'use strict';
-  const Sel = window.Selene;
+  const Sel = window.Gale;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -14,12 +14,12 @@
 
   /* ---------- WebGL ---------- */
   const canvas = $('#gl');
-  let scene = window.SeleneScene && window.SeleneScene.init(canvas);
+  let scene = window.GaleScene && window.GaleScene.init(canvas);
   const glFail = on => { document.documentElement.classList.toggle('no-gl', on); document.body.classList.toggle('no-gl', on); };
   glFail(!scene);
   // recover from GPU context loss instead of leaving a black screen
   canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); scene = null; glFail(true); });
-  canvas.addEventListener('webglcontextrestored', () => { scene = window.SeleneScene.init(canvas); glFail(!scene); });
+  canvas.addEventListener('webglcontextrestored', () => { scene = window.GaleScene.init(canvas); glFail(!scene); });
 
   /* ---------- kinetic type ---------- */
   const FX = ['', 'fx-flip', 'fx-blur'];
@@ -75,7 +75,7 @@
   /* ---------- loader ---------- */
   const nEl = $('.loader-n');
   let readyFired = false;
-  const first = home && !sessionStorage.getItem('selene_seen');
+  const first = home && !sessionStorage.getItem('gale_seen');
   function ready() {
     if (readyFired) return; readyFired = true;
     document.body.classList.add('ready');
@@ -83,7 +83,7 @@
     startObservers();
   }
   if (first) {
-    try { sessionStorage.setItem('selene_seen', '1'); } catch (e) {}
+    try { sessionStorage.setItem('gale_seen', '1'); } catch (e) {}
     const dur = reduced ? 200 : 1900, t0 = performance.now();
     (function tick(now) {
       const p = clamp((now - t0) / dur, 0, 1);
@@ -211,14 +211,14 @@
   }
 
   /* ---------- state ---------- */
-  const SCN = { time: 0, spin: 0, zoom: 0, camY: 0, orbit: 0, lookY: 0, roll: 0, light: 0, vel: 0, ring: 0, mag: 0, crater: 1, glowAmt: 1, bob: 0, ox: .34, oy: 0, mx: 0, my: 0, glow: [1, .85, .62] };
+  const SCN = { time: 0, spin: 0, zoom: 0, camY: 0, orbit: 0, lookY: 0, roll: 0, light: 0, vel: 0, blow: .7, glowAmt: 1, bob: 0, ox: .34, oy: 0, mx: 0, my: 0, glow: [.2, .88, 1], body: [.1, .11, .14] };
   const num = (el, k, d) => (el.dataset[k] !== undefined && el.dataset[k] !== '' ? +el.dataset[k] : d);
-  const key = el => ({ ox: num(el, 'ox', 0), oy: num(el, 'oy', 0), zoom: num(el, 'zoom', 0), light: num(el, 'light', 0), ring: num(el, 'ring', 0), crater: num(el, 'crater', 1), orbit: num(el, 'orbit', 0), look: num(el, 'look', 0), bob: num(el, 'bob', 0) });
+  const key = el => ({ ox: num(el, 'ox', 0), oy: num(el, 'oy', 0), zoom: num(el, 'zoom', 0), light: num(el, 'light', 0), blow: num(el, 'blow', .7), orbit: num(el, 'orbit', 0), look: num(el, 'look', 0), bob: num(el, 'bob', 0) });
   const mix = (a, b, t) => { const o = {}; for (const k in a) o[k] = lerp(a[k], b[k], t); return o; };
 
   let last = performance.now(), smoothY = scrollY, prevY = scrollY, vel = 0, firstFrame = true, slowAcc = 0, fcount = 0;
   const root = document.documentElement, bar = $('.progress i');
-  let glowTarget = hexRgb(Sel.CAT.colors[0].hex), autoIdx = -1;
+  let autoIdx = -1, viewIdx = -1;
 
   function frame(now) {
     const dtRaw = (now - last) / 1000, dt = Math.min(dtRaw, .05); last = now;
@@ -242,25 +242,19 @@
       const t = ss(clamp((pos - (tops[i] + hs[i] - L)) / L, 0, 1));
       tgt = mix(a, key(secs[i + 1]), t);
     }
-    // product options drive the 3D object while the shop is in view
-    const inShop = shopEl ? ss(clamp(1 - Math.abs((tops[secs.indexOf(shopEl)] + hs[secs.indexOf(shopEl)] / 2) - pos) / (vh * 1.1), 0, 1)) : 0;
-    const wantMag = Sel.opt && Sel.opt.base === 'float' ? 1 : 0;
-    const sizeZ = Sel.opt ? { '15': .3, '18': -.05, '20': -.4 }[Sel.opt.size] : 0;
     const aspect = vw / vh, narrow = vw <= 820;
     const oxScale = clamp(aspect / 1.78, .6, 1.3);
     const ox = narrow ? 0 : tgt.ox * oxScale;
     const oy = narrow ? (i === 0 ? .27 : .24) : tgt.oy;
-    const zoom = tgt.zoom + sizeZ * inShop - (narrow ? 4.2 : 0);
+    const zoom = tgt.zoom - (narrow ? 4.0 : 0);
 
     const e = firstFrame ? 1 : k * .55;
     SCN.ox = lerp(SCN.ox, ox, e); SCN.oy = lerp(SCN.oy, oy, e);
     SCN.zoom = lerp(SCN.zoom, zoom, e);
     SCN.light = lerp(SCN.light, tgt.light, firstFrame ? 1 : k * .7);
-    SCN.ring = lerp(SCN.ring, tgt.ring, e);
-    SCN.mag = lerp(SCN.mag, tgt.ring > .5 ? (inShop > .3 ? wantMag : 1) : SCN.mag, e);
-    SCN.crater = lerp(SCN.crater, tgt.crater, e);
+    SCN.blow = lerp(SCN.blow, tgt.blow, e);
     SCN.bob = lerp(SCN.bob, tgt.bob, e);
-    SCN.lookY = lerp(SCN.lookY, tgt.look + inShop * (1 - SCN.mag) * .28, e);
+    SCN.lookY = lerp(SCN.lookY, tgt.look, e);
 
     const maxY = Math.max(1, root.scrollHeight - vh);
     const prog = smoothY / maxY;
@@ -274,13 +268,12 @@
     mouse.sx = lerp(mouse.sx, mouse.x, k * .35); mouse.sy = lerp(mouse.sy, mouse.y, k * .35);
     SCN.mx = mouse.sx; SCN.my = mouse.sy;
 
-    // lamp colour: auto-cycles in the hero until the visitor picks one
-    if (home && !Sel.userColor && !reduced && scrollY < vh * .8 && readyFired) {
-      const idx = Math.floor(SCN.time / 3.2) % Sel.CAT.colors.length;
-      if (idx !== autoIdx) { autoIdx = idx; Sel.setColor(idx, false); }
-    }
-    glowTarget = hexRgb(Sel.CAT.colors[Sel.color].hex);
-    for (let c = 0; c < 3; c++) SCN.glow[c] = lerp(SCN.glow[c], glowTarget[c], 1 - Math.pow(.02, dt));
+    // colour: the hero auto-previews every colourway until the visitor picks one; elsewhere the selected variant shows
+    let idx = Sel.color;
+    if (home && !Sel.userColor && !reduced && scrollY < vh * .8 && readyFired) idx = Math.floor(SCN.time / 3.2) % Sel.CAT.colors.length;
+    if (idx !== viewIdx) { viewIdx = idx; Sel.preview(idx); }
+    const cv = Sel.CAT.colors[idx], gT = hexRgb(cv.accent), bT = hexRgb(cv.hex), ce = 1 - Math.pow(.02, dt);
+    for (let c = 0; c < 3; c++) { SCN.glow[c] = lerp(SCN.glow[c], gT[c], ce); SCN.body[c] = lerp(SCN.body[c], bT[c] * .9, ce); }
     SCN.glowAmt = 1 + Math.sin(SCN.time * 1.7) * .04 + vel * .1;
     document.body.classList.toggle('is-light', SCN.light > .5);
 

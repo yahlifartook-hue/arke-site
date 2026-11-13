@@ -1,10 +1,10 @@
-/* SELENE — store configuration. Edit this file; nothing else needs touching to rebrand or go live. */
-window.SELENE_CONFIG = {
-  brand: "SELENE",
-  legalName: "Selene Lunar Ltd.",            // <- your registered business name
+/* GALE — store configuration. Edit this file; nothing else needs touching to rebrand or go live. */
+window.GALE_CONFIG = {
+  brand: "GALE",
+  legalName: "Gale Cooling Ltd.",            // <- your registered business name
   address: "123 Example Street, City, Country", // <- your business address
   supportEmail: "support@example.com",       // <- receives order requests / returns / privacy requests
-  siteUrl: "",                                // optional, e.g. https://selene.example.com
+  siteUrl: "",                                // optional, e.g. https://gale.example.com
   currency: "USD",
   freeShippingOver: 50,
   shippingFlat: 4.99,

@@ -1,8 +1,8 @@
 {
-  "name": "selene-lunar-lamp-shop",
+  "name": "gale-neck-fan-shop",
   "version": "1.0.0",
   "private": true,
-  "description": "SELENE — cinematic WebGL storefront for a 16-colour lunar lamp. Static front-end + one serverless checkout function.",
+  "description": "GALE — cinematic WebGL storefront for a wearable neck fan. Static front-end + one serverless checkout function.",
   "scripts": { "dev": "python3 -m http.server 8000", "test": "node scripts/test-api.js" },
   "engines": { "node": ">=20" },
   "repository": { "type": "git", "url": "https://github.com/yahlifartook-hue/arke-site.git" }

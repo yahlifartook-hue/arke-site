@@ -1,7 +1,7 @@
-/* SELENE — shared layer: page chrome, cart, cookie consent, page transitions, effects helpers. */
+/* GALE — shared layer: page chrome, cart, cookie consent, page transitions, effects helpers. */
 (function () {
   'use strict';
-  const CFG = window.SELENE_CONFIG, CAT = window.SELENE_CATALOG;
+  const CFG = window.GALE_CONFIG, CAT = window.GALE_CATALOG;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: CFG.currency });
@@ -17,15 +17,21 @@
 
   /* ---------------- state shared with the 3D scene ---------------- */
   const hexToRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
-  const Selene = window.Selene = {
+  const Gale = window.Gale = {
     CFG, CAT, money, esc, store, $, $$,
     color: 0, userColor: false, events: new EventTarget(),
     setColor(i, user) {
       this.color = (i + CAT.colors.length) % CAT.colors.length;
       if (user) this.userColor = true;
       const c = CAT.colors[this.color];
-      document.documentElement.style.setProperty('--glow', c.hex);
+      document.documentElement.style.setProperty('--glow', c.accent);
       this.events.dispatchEvent(new CustomEvent('color', { detail: c }));
+    },
+    // scene-only preview (hero auto-cycle): updates the accent + hero label without changing the selected variant
+    preview(i) {
+      const c = CAT.colors[i];
+      document.documentElement.style.setProperty('--glow', c.accent);
+      const h = document.getElementById('hero-cname'); if (h) h.textContent = c.name;
     },
     toast(msg) {
       const t = document.createElement('div');
@@ -37,9 +43,9 @@
   };
 
   /* ---------------- cart ---------------- */
-  const Cart = Selene.cart = {
-    items: (store.get('selene_cart_v1', []) || []).filter(i => CAT.skus[i.sku]),
-    save() { store.set('selene_cart_v1', this.items); render(); },
+  const Cart = Gale.cart = {
+    items: (store.get('gale_cart_v1', []) || []).filter(i => CAT.skus[i.sku]),
+    save() { store.set('gale_cart_v1', this.items); render(); },
     add(sku, qty = 1) {
       if (!CAT.skus[sku]) return;
       const l = this.items.find(i => i.sku === sku);
@@ -66,11 +72,11 @@
 <div class="grain" aria-hidden="true"></div>
 <div class="cursor" aria-hidden="true"><i></i></div>
 <div class="progress" aria-hidden="true"><i></i></div>
-<div class="loader" aria-hidden="true"><span class="loader-label">${esc(CFG.brand)} — Lunar lamps</span><span class="loader-n">000</span></div>
+<div class="loader" aria-hidden="true"><span class="loader-label">${esc(CFG.brand)} — Neck fans</span><span class="loader-n">000</span></div>
 <div class="wipe" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="nav">
-  <a href="${H || '#top'}" class="logo" aria-label="${esc(CFG.brand)} home">${esc(CFG.brand)}<sup>☾</sup></a>
+  <a href="${H || '#top'}" class="logo" aria-label="${esc(CFG.brand)} home">${esc(CFG.brand)}<sup>≋</sup></a>
   <nav aria-label="Primary">
     <a href="${H}#shop" class="roll" data-t="Shop"><span>Shop</span></a>
     <a href="${H}#features" class="roll hide-s" data-t="Features"><span>Features</span></a>
@@ -84,7 +90,7 @@
   <div class="d-head"><h2>Your cart</h2><button class="x" data-close-cart aria-label="Close cart">✕</button></div>
   <div class="ship"><p class="ship-t"></p><div class="bar"><i></i></div></div>
   <ul class="lines"></ul>
-  <div class="empty"><i class="orb"></i><p>Nothing here yet.<br>The night is still unlit.</p><a href="${H}#shop" class="btn sm" data-close-cart><span>Shop the lamp</span><b>→</b></a></div>
+  <div class="empty"><i class="orb"></i><p>Nothing here yet.<br>Your neck is still hot.</p><a href="${H}#shop" class="btn sm" data-close-cart><span>Shop the fan</span><b>→</b></a></div>
   <div class="d-foot">
     <dl><div><dt>Subtotal</dt><dd class="d-sub"></dd></div><div><dt>Shipping</dt><dd class="d-ship"></dd></div></dl>
     <a href="checkout.html" class="btn magnetic checkout-link"><span>Checkout</span><b>→</b></a>
@@ -95,7 +101,7 @@
   const footer = `
 <footer class="foot" role="contentinfo">
   <div class="foot-top">
-    <div class="foot-col"><h3>Shop</h3><a href="${H}#shop">The Lunar Lamp</a><a href="${H}#features">Features</a><a href="${H}#specs">Specs</a><a href="${H}#faq">FAQ</a></div>
+    <div class="foot-col"><h3>Shop</h3><a href="${H}#shop">The Neck Fan</a><a href="${H}#features">Features</a><a href="${H}#specs">Specs</a><a href="${H}#faq">FAQ</a></div>
     <div class="foot-col"><h3>Help</h3><a href="shipping.html">Shipping</a><a href="returns.html">Returns &amp; refunds</a><a href="reviews.html">Reviews</a><a data-mail href="#"></a></div>
     <div class="foot-col"><h3>Legal</h3><a href="privacy.html">Privacy policy</a><a href="cookies.html">Cookies</a><a href="terms.html">Terms of sale</a><button data-open-consent>Cookie settings</button></div>
     <div class="foot-col"><h3>Build</h3><a href="${GH}" target="_blank" rel="noopener">Source on GitHub ↗</a><span class="muted">Static front-end · serverless checkout</span></div>
@@ -113,7 +119,7 @@
   </div>
   <div class="cc-pref" hidden>
     <label class="sw"><input type="checkbox" checked disabled><i></i><span><b>Essential</b> Cart, checkout, security, your consent choice. Always on.</span></label>
-    <label class="sw"><input type="checkbox" data-k="prefs"><i></i><span><b>Preferences</b> Remembers things like your chosen lamp colour.</span></label>
+    <label class="sw"><input type="checkbox" data-k="prefs"><i></i><span><b>Preferences</b> Remembers things like your chosen colour.</span></label>
     <label class="sw"><input type="checkbox" data-k="analytics"><i></i><span><b>Analytics</b> Anonymous usage stats to improve the site.</span></label>
     <label class="sw"><input type="checkbox" data-k="marketing"><i></i><span><b>Marketing</b> Ad measurement &amp; retargeting pixels.</span></label>
     <div class="cc-btns"><button class="btn sm solid" data-cc="save"><span>Save choices</span></button><button class="link" data-cc="back">Back</button></div>
@@ -145,7 +151,7 @@
     document.documentElement.classList.remove('lock');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  Selene.openCart = openCart; Selene.closeCart = closeCart;
+  Gale.openCart = openCart; Gale.closeCart = closeCart;
   document.addEventListener('click', e => {
     if (e.target.closest('[data-open-cart]')) openCart();
     else if (e.target.closest('[data-close-cart]')) closeCart();
@@ -154,8 +160,8 @@
 
   function lineHTML(i) {
     const s = CAT.skus[i.sku];
-    return `<li data-sku="${i.sku}"><i class="orb" style="--s:${s.size}"></i>
-      <div><b>${esc(s.name.replace('SELENE Lunar Lamp — ', ''))}</b><span>${money(s.price)} each</span>
+    return `<li data-sku="${i.sku}"><i class="orb" style="--c:${s.hex}"></i>
+      <div><b>${esc(s.name.replace('GALE Neck Fan — ', ''))}</b><span>${money(s.price)} each</span>
       <div class="qty"><button data-dec aria-label="Decrease quantity">−</button><output>${i.qty}</output><button data-inc aria-label="Increase quantity">+</button></div></div>
       <div class="lt"><span>${money(s.price * i.qty)}</span><button data-rm>Remove</button></div></li>`;
   }
@@ -179,19 +185,19 @@
     const left = goal - sub;
     $('.ship-t', drawer).innerHTML = !n ? `Free shipping over <b>${money(goal)}</b>` : left > 0 ? `<b>${money(left)}</b> away from free shipping` : `<b>Free shipping unlocked.</b> 🌕`;
     $('.bar i', drawer).style.transform = `scaleX(${Math.min(1, sub / goal)})`;
-    Selene.events.dispatchEvent(new CustomEvent('cart'));
+    Gale.events.dispatchEvent(new CustomEvent('cart'));
   }
-  addEventListener('storage', e => { if (e.key === 'selene_cart_v1') { Cart.items = (store.get('selene_cart_v1', []) || []).filter(i => CAT.skus[i.sku]); render(); } });
+  addEventListener('storage', e => { if (e.key === 'gale_cart_v1') { Cart.items = (store.get('gale_cart_v1', []) || []).filter(i => CAT.skus[i.sku]); render(); } });
   render();
 
   /* ---------------- consent ---------------- */
-  const cc = $('#cc'), KEY = 'selene_consent_v1';
-  const Consent = Selene.consent = {
+  const cc = $('#cc'), KEY = 'gale_consent_v1';
+  const Consent = Gale.consent = {
     get() { return store.get(KEY, null); },
     set(c) {
       c = Object.assign({ necessary: true, prefs: false, analytics: false, marketing: false }, c, { ts: Date.now() });
       store.set(KEY, c);
-      try { document.cookie = `selene_consent=${(c.prefs ? 'p' : '') + (c.analytics ? 'a' : '') + (c.marketing ? 'm' : '') || 'n'};max-age=15552000;path=/;SameSite=Lax`; } catch (e) {}
+      try { document.cookie = `gale_consent=${(c.prefs ? 'p' : '') + (c.analytics ? 'a' : '') + (c.marketing ? 'm' : '') || 'n'};max-age=15552000;path=/;SameSite=Lax`; } catch (e) {}
       apply(c);
     }
   };
@@ -199,8 +205,8 @@
     if (c.analytics && CFG.analyticsSrc && !$('script[data-analytics]')) {
       const s = document.createElement('script'); s.src = CFG.analyticsSrc; s.async = true; s.dataset.analytics = '1'; document.head.appendChild(s);
     }
-    if (!c.prefs) store.del('selene_prefs_v1');
-    Selene.events.dispatchEvent(new CustomEvent('consent', { detail: c }));
+    if (!c.prefs) store.del('gale_prefs_v1');
+    Gale.events.dispatchEvent(new CustomEvent('consent', { detail: c }));
   }
   function showCC(custom) {
     const c = Consent.get() || {};
@@ -209,7 +215,7 @@
     cc.hidden = false; requestAnimationFrame(() => cc.classList.add('on'));
   }
   function hideCC() { cc.classList.remove('on'); setTimeout(() => (cc.hidden = true), 600); }
-  Selene.openConsent = () => showCC(true);
+  Gale.openConsent = () => showCC(true);
   cc.addEventListener('click', e => {
     const b = e.target.closest('[data-cc]'); if (!b) return;
     const a = b.dataset.cc;
@@ -217,16 +223,16 @@
     else if (a === 'none') { Consent.set({}); hideCC(); }
     else if (a === 'custom') showCC(true);
     else if (a === 'back') showCC(false);
-    else if (a === 'save') { const o = {}; $$('[data-k]', cc).forEach(i => (o[i.dataset.k] = i.checked)); Consent.set(o); hideCC(); Selene.toast('Cookie choices saved'); }
+    else if (a === 'save') { const o = {}; $$('[data-k]', cc).forEach(i => (o[i.dataset.k] = i.checked)); Consent.set(o); hideCC(); Gale.toast('Cookie choices saved'); }
   });
   document.addEventListener('click', e => { if (e.target.closest('[data-open-consent]')) showCC(true); });
   const existing = Consent.get();
   if (existing) apply(existing); else setTimeout(() => showCC(false), home ? 4200 : 1400);
 
-  // remember chosen lamp colour only with "preferences" consent
-  const prefs = store.get('selene_prefs_v1', null);
-  if (prefs && existing && existing.prefs && typeof prefs.color === 'number') { Selene.setColor(prefs.color, true); } else Selene.setColor(0);
-  Selene.events.addEventListener('color', () => { const c = Consent.get(); if (c && c.prefs && Selene.userColor) store.set('selene_prefs_v1', { color: Selene.color }); });
+  // remember chosen colour only with "preferences" consent
+  const prefs = store.get('gale_prefs_v1', null);
+  if (prefs && existing && existing.prefs && typeof prefs.color === 'number') { Gale.setColor(prefs.color, true); } else Gale.setColor(0);
+  Gale.events.addEventListener('color', () => { const c = Consent.get(); if (c && c.prefs && Gale.userColor) store.set('gale_prefs_v1', { color: Gale.color }); });
 
   /* ---------------- page transitions + anchors ---------------- */
   const wipe = $('.wipe');
@@ -244,7 +250,7 @@
   });
 
   /* ---------------- fx helpers ---------------- */
-  Selene.fx = {
+  Gale.fx = {
     burst(x, y, n = 22) {
       for (let i = 0; i < n; i++) {
         const s = document.createElement('i'); s.className = 'spark';

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Returns & Refunds — SELENE</title>
-<meta name="description" content="30-day returns, refunds and what to do if your lamp arrives damaged. Start a return online.">
+<title>Returns & Refunds — GALE</title>
+<meta name="description" content="30-day returns, refunds and what to do if your fan arrives damaged. Start a return online.">
 <meta name="theme-color" content="#050507">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,12 +13,12 @@
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="is-loading" data-page="returns">
-<main id="main"><section class="sec p-hero" data-ox=".5" data-zoom="-.2" data-orbit="-.3" data-ring="0">
+<main id="main"><section class="sec p-hero" data-ox=".5" data-zoom="-.2" data-orbit="-.3">
   <p class="eyebrow">( Help ) &nbsp;Returns</p>
   <h1 class="display" data-split>Return <em>it.</em> No drama.</h1>
   <p class="lede reveal">Changed your mind? Got a dud? Start a return in under a minute.</p>
 </section>
-<section class="doc sec" id="policy" data-ox=".5" data-zoom="-1.5" data-orbit=".3" data-ring="0" style="min-height:0;padding-top:30px">
+<section class="doc sec" id="policy" data-ox=".5" data-zoom="-1.5" data-orbit=".3" style="min-height:0;padding-top:30px">
   <nav class="toc" aria-label="On this page"><a href="#policy-text">Policy</a><a href="#request">Start a return</a><a href="#faulty">Faulty or damaged</a></nav>
   <div>
   <div class="steps" style="max-width:920px">
@@ -32,21 +32,21 @@
     <h2 id="policy-text">The <span data-days></span>-day return policy</h2>
     <ul>
       <li>Return any item within <strong><span data-days></span> days of delivery</strong> for a refund of the item price. No reason needed.</li>
-      <li>Items must be unused or lightly used, with all accessories (remote, cable, base) and in secure packaging.</li>
+      <li>Items must be unused or lightly used, with all accessories (cable, manual, packaging) and in secure packaging.</li>
       <li>For change-of-mind returns the customer pays return postage. We recommend a tracked service. The original shipping fee is not refundable.</li>
       <li>Refunds go to your original payment method within 5–10 business days after we receive and check the parcel.</li>
-      <li>Want a different size or base? Return the original and place a new order, or ask us about an exchange.</li>
+      <li>Want a different battery size or colour? Return the original and place a new order, or ask us about an exchange.</li>
     </ul>
     <h2 id="faulty">Faulty or damaged on arrival</h2>
-    <p>If your lamp arrives damaged, doesn’t work or isn’t what you ordered, tell us within <span data-days></span> days of delivery with your order number and a photo or short video. We will send a <strong>free replacement or a full refund including shipping</strong>, and you won’t need to post the faulty item back unless we ask.</p>
+    <p>If your fan arrives damaged, doesn’t work or isn’t what you ordered, tell us within <span data-days></span> days of delivery with your order number and a photo or short video. We will send a <strong>free replacement or a full refund including shipping</strong>, and you won’t need to post the faulty item back unless we ask.</p>
     <p>Your statutory rights as a consumer are never affected by this policy.</p>
     <h2 id="request">Start a return</h2>
     <p class="note" id="rt-demo" hidden>Demo mode: no server is connected yet. Submitting generates your return reference and prepares an email to <span data-cfg="supportEmail"></span>. Set <code>returnsEndpoint</code> in <code>assets/config.js</code> to send it automatically.</p>
     <form id="rt-form" class="form">
-      <label class="field"><span>Order number</span><input name="order" required list="rt-orders" placeholder="SEL-XXXXXX" autocomplete="off"><datalist id="rt-orders"></datalist></label>
+      <label class="field"><span>Order number</span><input name="order" required list="rt-orders" placeholder="GAL-XXXXXX" autocomplete="off"><datalist id="rt-orders"></datalist></label>
       <label class="field"><span>Email used on the order</span><input name="email" type="email" required autocomplete="email"></label>
       <label class="field"><span>Item</span><select name="item" id="rt-item" required></select></label>
-      <label class="field"><span>What would you like?</span><select name="resolution" required><option value="refund">Refund</option><option value="replacement">Replacement</option><option value="exchange">Exchange for another size/base</option></select></label>
+      <label class="field"><span>What would you like?</span><select name="resolution" required><option value="refund">Refund</option><option value="replacement">Replacement</option><option value="exchange">Exchange for another battery size / colour</option></select></label>
       <label class="field full"><span>Reason</span><select name="reason" required><option value="changed-mind">Changed my mind</option><option value="faulty">Faulty / not working</option><option value="damaged">Damaged on arrival</option><option value="wrong-item">Wrong item received</option><option value="not-as-described">Not as described</option><option value="other">Other</option></select></label>
       <label class="field full"><span>Tell us more</span><textarea name="details" placeholder="What happened? For damage or faults, mention you’ll attach photos."></textarea></label>
       <div class="sub full"><button class="btn solid magnetic" type="submit"><span>Submit return request</span><b>→</b></button></div>

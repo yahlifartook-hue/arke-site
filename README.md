@@ -1,11 +1,11 @@
-# SELENE — Lunar Lamp storefront
+# GALE — Neck Fan storefront
 
-A cinematic, fully working one-product store. **Product:** a 16-colour 3D-printed moon lamp with an optional magnetic levitating base, a category that sells in high volume on AliExpress and other marketplaces (dropshipping-friendly).
+A cinematic, fully working one-product store. **Product:** a wearable bladeless neck fan (3 speeds, USB-C rechargeable, 5 colours, 3 battery sizes), a perennial best-seller category on AliExpress and similar marketplaces, and dropshipping-friendly.
 
 Source: <https://github.com/yahlifartook-hue/arke-site>
 
 ## What's inside
-- **Raw WebGL (no libraries):** raymarched cratered moon lit from within, levitation ring, star field, nebula and dust motes. The colour swatches, size and base options change the 3D object live; scroll flies the camera into the craters, orbits and zooms; drag the moon to spin it.
+- **Raw WebGL (no libraries):** a raymarched glossy neck fan with vent slits, an animated LED strip and airflow glow, plus wind streaks that speed up as you scroll. Colour and battery options change the 3D product live; scroll flies the camera around and into the fan; drag to spin it.
 - **Motion:** kinetic masked type (rise / flip / blur variants), text scramble, scroll-lit words, pinned sliding statement, horizontal pinned feature scroll, scroll-velocity marquees + skew, magnetic buttons, custom cursor, film grain, page-wipe transitions, add-to-cart orb flight + sparks.
 - **Working shop:** product options, cart drawer (persisted), free-shipping progress bar, checkout form, success page.
 - **Pages:** `privacy.html`, `cookies.html` (+ working consent banner / preferences), `returns.html` (policy + working return request form), `reviews.html` (rating summary, filter, sort, write a review), `terms.html`, `shipping.html`, `404.html`.
@@ -31,7 +31,7 @@ Business name, address, support email, free-shipping threshold, return window, e
 - Match specs, sizes, battery and delivery claims to your actual supplier listing; test-order a sample first.
 - Sample reviews are labelled "Sample". Never publish invented reviews as real ones.
 - Reviews are stored in the visitor's browser until you point `reviewsEndpoint` at a service. For real social proof, collect reviews from real buyers.
-- Check the SELENE name/domain for trademark conflicts in your market.
+- Check the GALE name/domain for trademark conflicts in your market.
 
 ## Structure
     index.html            home + product

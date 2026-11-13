@@ -1,28 +1,26 @@
 /* Single source of truth for products + prices. Used by the browser AND by api/checkout.js (so prices can't be tampered with). */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.SELENE_CATALOG = factory();
+  else root.GALE_CATALOG = factory();
 })(this, function () {
+  // Battery tiers (prices in cents)
   const sizes = [
-    { id: '15', label: '15 cm', price: 3490 },
-    { id: '18', label: '18 cm', price: 4490 },
-    { id: '20', label: '20 cm', price: 5490 }
+    { id: '4', label: '4000 mAh', note: 'Everyday', price: 2990 },
+    { id: '5', label: '5000 mAh', note: 'Longer runtime', price: 3490 },
+    { id: '7', label: '7000 mAh', note: 'All-day max', price: 4490 }
   ];
-  const bases = [
-    { id: 'stand', label: 'Wooden stand', add: 0 },
-    { id: 'float', label: 'Levitating base', add: 4500 }
-  ];
+  // body = product colour, accent = the glow/UI colour used for that variant
   const colors = [
-    ['Warm White', '#ffd9a0'], ['Cool White', '#dbe9ff'], ['Amber', '#ffb020'], ['Sunset', '#ff6a2b'],
-    ['Red', '#ff2e4d'], ['Rose', '#ff4fa3'], ['Magenta', '#e03bff'], ['Violet', '#9a5cff'],
-    ['Indigo', '#5a6bff'], ['Blue', '#2f8bff'], ['Sky', '#34d2ff'], ['Cyan', '#2ff0d0'],
-    ['Mint', '#3dff9a'], ['Green', '#8dff3a'], ['Lime', '#d6ff3a'], ['Gold', '#ffe14a']
-  ].map(c => ({ name: c[0], hex: c[1] }));
-
+    { id: 'black', name: 'Void Black', hex: '#1a1c22', accent: '#35e0ff' },
+    { id: 'white', name: 'Glacier White', hex: '#e8ecf1', accent: '#7fb8ff' },
+    { id: 'blue', name: 'Storm Blue', hex: '#2c5fe0', accent: '#5ee1ff' },
+    { id: 'rose', name: 'Rose Gold', hex: '#e88aa4', accent: '#ff8fb0' },
+    { id: 'lime', name: 'Volt Lime', hex: '#b8f02a', accent: '#d8ff3d' }
+  ];
   const skus = {};
-  sizes.forEach(s => bases.forEach(b => {
-    const id = `selene-${s.id}-${b.id}`;
-    skus[id] = { id, name: `SELENE Lunar Lamp — ${s.label}, ${b.label}`, short: `${s.label} · ${b.label}`, price: s.price + b.add, size: s.id, base: b.id };
+  sizes.forEach(s => colors.forEach(c => {
+    const id = `gale-${s.id}-${c.id}`;
+    skus[id] = { id, name: `GALE Neck Fan — ${s.label}, ${c.name}`, short: `${s.label} · ${c.name}`, price: s.price, size: s.id, color: c.id, hex: c.hex };
   }));
-  return { currency: 'usd', product: { id: 'selene', name: 'SELENE Lunar Lamp' }, sizes, bases, colors, skus };
+  return { currency: 'usd', product: { id: 'gale', name: 'GALE Neck Fan' }, sizes, colors, skus };
 });

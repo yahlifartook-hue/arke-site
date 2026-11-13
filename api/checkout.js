@@ -2,7 +2,7 @@
    Prices are looked up server-side from assets/catalog.js, so the browser can never set its own price.
    Needs env var STRIPE_SECRET_KEY. Without it, responds 501 {error:"not_configured"} and the site falls back to order-request mode. */
 const CAT = require('../assets/catalog.js');
-const CFG = (() => { const w = {}; new Function('window', require('fs').readFileSync(require('path').join(__dirname, '../assets/config.js'), 'utf8'))(w); return w.SELENE_CONFIG; })();
+const CFG = (() => { const w = {}; new Function('window', require('fs').readFileSync(require('path').join(__dirname, '../assets/config.js'), 'utf8'))(w); return w.GALE_CONFIG; })();
 
 // flatten nested objects into Stripe's form encoding: a[b][0][c]=1
 function enc(obj, prefix, out = []) {
@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
     client_reference_id: orderId,
     line_items,
     shipping_options: [{ shipping_rate_data: { type: 'fixed_amount', display_name: shipping ? 'Standard shipping (7–20 business days)' : 'Free shipping (7–20 business days)', fixed_amount: { amount: shipping, currency: CAT.currency } } }],
-    payment_intent_data: { shipping: { name: str(c.name, 100) || 'Customer', phone: str(c.phone, 30), address: { line1: str(a.line1, 200), line2: str(a.line2, 200), city: str(a.city, 100), state: str(a.state, 100), postal_code: str(a.postal, 20), country: str(a.country, 2).toUpperCase() } }, description: 'SELENE order ' + orderId },
+    payment_intent_data: { shipping: { name: str(c.name, 100) || 'Customer', phone: str(c.phone, 30), address: { line1: str(a.line1, 200), line2: str(a.line2, 200), city: str(a.city, 100), state: str(a.state, 100), postal_code: str(a.postal, 20), country: str(a.country, 2).toUpperCase() } }, description: 'GALE order ' + orderId },
     metadata: { order_id: orderId, notes: str(body.notes, 450) },
     success_url: `${origin}/success.html?order=${encodeURIComponent(orderId)}&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/checkout.html`
